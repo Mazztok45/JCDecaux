@@ -61,8 +61,8 @@ model = kmeans.fit(rescaledData.select('features'))
 model.transform((rescaledData.select('features'))).groupby('prediction').count().show()
 
 
-# In[46]:
+# In[47]:
 
 
-model.transform((rescaledData.select('features'))).show()
+model.transform((rescaledData.select('features'))).write.json('C:/Users/maxen/Downloads/result.json')
 
