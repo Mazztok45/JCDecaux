@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[53]:
+# In[1]:
 
 
 from pyspark.context import SparkContext
@@ -12,7 +12,7 @@ sc = SparkContext('local', conf)
 spark = SparkSession(sc)
 
 
-# In[54]:
+# In[2]:
 
 
 import pyspark.sql.functions as F
@@ -20,20 +20,20 @@ from pyspark.ml.feature import HashingTF, IDF, Tokenizer
 from pyspark.ml.clustering import KMeans
 
 
-# In[55]:
+# In[3]:
 
 
 spark.read.json('C:/Users/maxen/Downloads/Test_DS/Test_DS/Brisbane_CityBike.json').show(150,False)
 
 
-# In[56]:
+# In[42]:
 
 
 df = spark.read.json('C:/Users/maxen/Downloads/Test_DS/Test_DS/Brisbane_CityBike.json').select('address').withColumn('newadress', 
             F.regexp_replace(F.regexp_replace(F.regexp_replace(F.upper(F.col('address')), 'ST', ''), 'RD', ''), '/', ''))
 
 
-# In[60]:
+# In[43]:
 
 
 tokenizer = Tokenizer(inputCol="newadress", outputCol="words")
@@ -48,22 +48,21 @@ idfModel = idf.fit(featurizedData)
 rescaledData = idfModel.transform(featurizedData)
 
 
-# In[63]:
+# In[44]:
 
 
 kmeans = KMeans().setK(2).setSeed(1)
 model = kmeans.fit(rescaledData.select('features'))
 
 
-# In[62]:
+# In[45]:
 
 
 model.transform((rescaledData.select('features'))).groupby('prediction').count().show()
 
 
-# In[73]:
+# In[46]:
 
 
-import os
-os.getcwd()
+model.transform((rescaledData.select('features'))).show()
 
